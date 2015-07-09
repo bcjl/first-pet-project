@@ -1,0 +1,56 @@
+.NavBarContainer {
+  font-family: 'Open Sans', sans-serif;
+  background: transparent;
+  height: 4em;
+  border-bottom: $custom-border-setting;
+  border-radius: $custom-border-radius;
+  box-shadow: ($custom-border-shadow - 2);
+  z-index: 3;
+  margin:0;
+  color: white;
+
+  .navbar-brand {
+    padding-top: 0.5em;
+  }
+  
+  .navbar-toggle {
+    border-color: #000000;
+    border-width:2px;
+    .icon-bar { 
+      background-color: #000000;
+    }
+  }
+
+  .navbar-toggle:hover {
+    background-color: #8B4513;
+  }
+
+  .navbar-collapse {
+    border-color: #CC9900;
+  }
+
+  li {
+  list-style: none;
+
+    .navBarItem {
+      // padding: 10px 25px;
+      color: white;
+      font-size: 1.1em;
+      text-transform: uppercase;
+    }
+  }
+
+}
+
+.navbar-nav > li > a {
+  color: #5f3817 !important;
+}
+
+.navbar-nav > li > a:hover {
+  color: #327aa3 !important;
+}
+
+.cleanLogo {
+  height: 1.75em;
+  width: 5em;
+}

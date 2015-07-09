@@ -1,29 +1,69 @@
 {
-  "name": "first-pet-project",
-  "version": "1.0.0",
-  "description": "Gonna be tight",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
+  "name": "",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "engines": {
+    "node": "0.10.x"
   },
-  "dependencies": {
-    "express": "^4.12.4",
-    "flux": "^2.0.3",
-    "react": "^0.13.3",
-    "reactify": "^1.1.1"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client-test": "./node_modules/.bin/mocha ./client/test/component --compilers js:babel/register --recursive",
+    "server-test": "./node_modules/.bin/mocha",
+    "test": "npm run client-test &&  npm run server-test",
+    "start": "gulp serve",
+    "postinstall": "bower install && node populateDB.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bcjl/first-pet-project.git"
+    "url": ""
   },
-  "author": "Brian Liu",
+  "keywords": [
+    ""
+  ],
+  "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bcjl/first-pet-project/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/bcjl/first-pet-project"
+  "homepage": "",
+  "dependencies": {
+    "body-parser": "^1.12.4",
+    "bower": "~1.4.1",
+    "express": "^4.12.4",
+    "express-session": "^1.11.2",
+    "flux": "~2.0.3",
+    "jquery": "^2.1.4",
+    "morgan": "^1.5.3",
+    "oauth": "^0.9.13",
+    "passport": "^0.2.2",
+    "passport-github2": "^0.1.9",
+    "pg": "^4.3.0",
+    "pg-hstore": "^2.3.2",
+    "react": "~0.13.3",
+    "sequelize": "^3.1.1"
+  },
+  "devDependencies": {
+    "gulp-jshint": "~1.11.0",
+    "gulp": "~3.8.11",
+    "jshint-stylish": "~2.0.0",
+    "chai": "~2.3.0",
+    "mocha": "~2.2.5",
+    "supertest": "~1.0.1",
+    "browser-sync": "~2.7.5",
+    "browserify": "~10.2.1",
+    "gulp-uglify": "~1.2.0",
+    "vinyl-source-stream": "~1.1.0",
+    "vinyl-buffer": "~1.0.0",
+    "reactify": "~1.1.1",
+    "gulp-nodemon": "~2.0.3",
+    "gulp-minify-css": "~1.1.1",
+    "gulp-concat": "~2.5.2",
+    "react-tools": "~0.13.3",
+    "babel": "~5.4.7",
+    "jsdom": "~3.1.2",
+    "request": "~2.56.0",
+    "gulp-sass": "~2.0.1",
+    "gulp-imagemin": "~2.2.1",
+    "gulp-shell": "~0.4.2"
+  }
 }
