@@ -192,6 +192,7 @@ var AlliedTeam = React.createClass({displayName: "AlliedTeam",
 
     return (
     React.createElement("div", {className: ""}, 
+      React.createElement("h3", null, "Allied Team"), 
       React.createElement("ul", null, 
            heroList 
       )
@@ -246,6 +247,7 @@ var EnemyTeam = React.createClass({displayName: "EnemyTeam",
 
     return (
     React.createElement("div", {className: ""}, 
+      React.createElement("h3", null, "Enemy Team"), 
       React.createElement("ul", null, 
            heroList 
       )

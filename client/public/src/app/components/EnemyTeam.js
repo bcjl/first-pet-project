@@ -40,6 +40,7 @@ var EnemyTeam = React.createClass({
 
     return (
     <div className="">
+      <h3>Enemy Team</h3>
       <ul>
           { heroList }
       </ul>

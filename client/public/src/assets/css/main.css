@@ -1,5 +1,9 @@
 body {
-  font-family: 'Open Sans', arial, sans-serif; }
+  font-family: 'Open Sans', arial, sans-serif;
+  background-image: url("../images/theme/hots_bg.jpg"); }
+
+.selectionWrapper {
+  margin-top: 100px; }
 
 #categories {
   overflow: hidden;
@@ -42,9 +46,9 @@ body {
 
 /* HOVER EFFECT  */
 #categories li {
-  width: 17.364%;
+  width: 16.272%;
   /* = (100-4.5) / 5.5 */
-  padding-bottom: 20.05%;
+  padding-bottom: 18.79%;
   /* =  width /0.866 */ }
 
 #categories li:nth-child(10n+6), #categories li:nth-child(10n+7), #categories li:nth-child(10n+8), #categories li:nth-child(10n+9), #categories li:nth-child(10n+10) {
@@ -107,27 +111,31 @@ body {
   float: left;
   height: 500px;
   width: 200px;
-  background-color: white;
-  display: inline-block; }
+  background-color: transparent;
+  display: inline-block;
+  color: white;
+  text-align: center; }
 
 .enemyContainer {
   float: right;
   height: 500px;
   width: 200px;
-  background-color: white;
-  display: inline-block; }
+  background-color: transparent;
+  display: inline-block;
+  color: white; }
 
 .teamContainer {
   width: 200px;
   list-style: none;
-  overflow: hidden; }
+  overflow: visible; }
 
 .SuggestionBox {
   width: 50%;
   margin: 0;
   margin-left: auto;
   margin-right: auto;
-  background-color: gray; }
+  background-color: transparent;
+  color: white; }
   .SuggestionBox li {
     list-style: none;
     display: inline-block; }
@@ -135,23 +143,20 @@ body {
     min-width: 110px; }
 
 .currentSelectionContainer {
-  margin: 0;
-  margin-left: auto;
-  margin-right: auto; }
+  position: absolute;
+  left: 40em;
+  top: 12em;
+  background-color: transparent;
+  color: white; }
+  .currentSelectionContainer button {
+    color: black; }
 
 .teamContainer li {
   list-style: none; }
 
 .teamContainer li div img {
-  height: 100px;
-  width: 100px; }
-
-.currentSelectionContainer {
-  margin: 0;
-  background-color: red;
-  margin-left: auto;
-  margin-right: auto;
-  display: inline-block; }
+  height: 75px;
+  width: 75px; }
 
 .teamWrapper {
   background-color: gray; }

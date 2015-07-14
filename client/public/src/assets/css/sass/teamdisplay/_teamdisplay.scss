@@ -2,32 +2,35 @@
   float:left;
   height: 500px;
   width: 200px;
-  background-color: white;
+  background-color: transparent;
   display: inline-block;
+  color: white;
+  text-align: center;
 }
 
 .enemyContainer {
   float:right;
   height: 500px;
   width: 200px;
-  background-color: white;
+  background-color: transparent;
   display: inline-block;
+  color: white;
 }
 
 .teamContainer {
     // height: 300px;
     width: 200px;
     list-style: none;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .SuggestionBox {
-  // display: none;
   width: 50%;
   margin: 0;
   margin-left: auto;
   margin-right: auto;
-  background-color: gray;
+  background-color: transparent;
+  color: white;
 
   li {
     list-style: none;
@@ -36,16 +39,19 @@
 
   div {
     min-width: 110px;
-    // height: 100px;
-    // display: inline-block;
-    // width: 120px;
   }
 }
 
 .currentSelectionContainer {
-  margin:0;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 40em;
+  top: 12em;
+  background-color: transparent;
+  color:white;
+
+  button {
+    color: black;
+  }
 }
 
 .teamContainer li {
@@ -53,17 +59,10 @@
 }
 
 .teamContainer li div img {
-  height: 100px;
-  width: 100px;
+  height: 75px;
+  width: 75px;
 }
 
-.currentSelectionContainer {
-  margin: 0;
-  background-color: red;
-  margin-left: auto;
-  margin-right: auto;
-  display: inline-block;
-}
 
 .teamWrapper {
   // width: 100%;
