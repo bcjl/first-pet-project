@@ -6730,9 +6730,10 @@ body {
 .currentSelectionContainer {
   position: absolute;
   left: 40em;
-  top: 12em;
+  top: 6em;
   background-color: transparent;
-  color: white; }
+  color: white;
+  z-index: 10; }
   .currentSelectionContainer button {
     color: black; }
 

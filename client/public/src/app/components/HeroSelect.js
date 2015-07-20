@@ -3,9 +3,7 @@ var React = require('react');
 var AppStore = require('./../stores/store');
 var AppActions = require('./../actions/actions');
 var HeroBox = require('./HeroBox');
-function getHeroes(){
-  return {heroes: AppStore.getHeroList(), currentSelection: 'None'}
-}
+
 
 function Handler(hero){
   AppActions.addAllied(hero);
@@ -13,7 +11,7 @@ function Handler(hero){
 
 var HeroSelect = React.createClass({
   clickHandler: function(hero){
-    this.setState({currentSelection: hero});
+    this.setState({currentSelection: hero.name});
   },
   toAlly: function(){
     if(this.state.currentSelection !== "None"){
@@ -31,17 +29,22 @@ var HeroSelect = React.createClass({
   },
 
   getInitialState: function(){
-    return getHeroes();
+    return {
+      currentSelection: 'None'
+    };
   },
-
+  componentWillMount: function( ) {
+    // console.log('props for select', this.props.HeroList);
+    // AppActions.loadHeroes();
+  },
   render: function() {
     var that = this;
-    var heroes = this.state.heroes.map(function(hero, i){
+    var heroes = this.props.HeroList.map(function(hero, i){
       return (
         <span key = {i}>
         <li>
           <div onClick={ that.clickHandler.bind(that, hero)} >
-            <HeroBox hero={hero} />
+            <HeroBox hero={hero.name} />
           </div>
         </li>
         </span>

@@ -1,117 +1,134 @@
-
 var AppDispatcher = require('../dispatcher/dispatcher');
 var AppConstants = require('../constants/constants');
 var assign = require('react/lib/Object.assign');
 var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = 'change';
-var ServerData = require('./../constants/data');
 
+
+/* ======= Store State Variables ======= */
+
+var _alliedTeam = [];
+var _enemyTeam = [];
+var _heroArray = [];
+// Extra hashtable to allow referencing heroes by name
 var _heroData = {};
-var _heroSelection = [];
-var _heroWinCalcs = {};
-var _sortedSuggestionList = [];
 
-//Fill up hero selection from base server data
-//may keep server data as a default if fetch from server fails.
 
-//immediately invoked function once to populate heroSelection.
-function _updateFromServer(){
-  for(var i = 0; i < ServerData.length; i++){
-    _heroSelection.push(ServerData[i].name);
-    _heroData[ServerData[i].name] = ServerData[i];
+// Hardcoded placeholder data, remove when Web API util is complete
+var defaultData = require('./../constants/data');
+_heroArray = defaultData;
+
+/* ======= Store data initialization ======= */
+
+(function _updateFromServer(){
+  $.get('/api/heroes', (
+    function(response){
+      _heroArray = JSON.parse(response);
+    }
+  ));
+}());
+
+// Immediately invoked function for populating hero data offline
+(function _populateDefaultHeroes(){
+  for(var i = 0; i < _heroArray.length; i++){
+    _heroData[_heroArray[i].name] = _heroArray[i];
   }
-};
-_updateFromServer();
+}())
 
-//Utility function for handling the input
+/* ======= Store Suggestion Utilities ======= */
+
+//Convert data from string format to float
 function _percentConverter(stringPercent){
   return parseFloat(stringPercent);
 };
 
-function _calculateAllyWinPoints(hero){
-  var percentChances = [];
-  var output = hero.overall_win ? _percentConverter(hero.overall_win) : 50;
-  
+// Calculate for input hero score for suggestion rankings
+function _calculatePoints(hero){
+  var matchupPercents = [];
+  // Allows calculation with missing overall data (due to parsing or scraping errors)
+  var currentSum = hero.overall_win ? _percentConverter(hero.overall_win) : 50;
   for(var i = 0; i < _enemyTeam.length; i++){
     var currentMatchCheck = hero.matchups[_enemyTeam[i]] ? hero.matchups[_enemyTeam[i]] : 50;
-    percentChances.push(_percentConverter(currentMatchCheck));
+    matchupPercents.push(_percentConverter(currentMatchCheck));
   }
-
-  for(var j = 0; j < percentChances.length; j++){
-    output += percentChances[j]
+  for(var j = 0; j < matchupPercents.length; j++){
+    currentSum += matchupPercents[j]
   }
-  return (output/(percentChances.length + 1)).toFixed(2);
+  return (currentSum/(matchupPercents.length + 1)).toFixed(2);
 };
 
-//Efficiency thoughts, can't memoize due to potential for
-//stats to change on new scrape, which wouldn't get taken into acct
-//Maybe persist last 1-2 permutations? Possibly more, space is cheap.
-function _populateSuccessChances(){
-  var currentHeroName = "";
-  for(var i = 0; i < _heroSelection.length; i++){
-    currentHeroName = _heroSelection[i];
-    _heroWinCalcs[currentHeroName] = _calculateAllyWinPoints(_heroData[currentHeroName]);
-  }
-};
-
-function _calculateEnemyWinPoints(hero){
-
-};
-
-// Takes in object, calls sort (JS natively sorts via quicksort)
-//in descending order from the callback, returns a new sorted array
+// Native quicksort of an object by values in descending order into an array
 function _sortObjectValues(obj){
   var sortedList = Object.keys(obj).sort(function(a,b){return obj[b]-obj[a]});
-  var newSortedPercents
   return sortedList;
 };
 
+// Produce a sorted array of hero names
+function _generateSuggestions(heroArray){
+  var heroArrayCopy = heroArray.slice();
+  var suggestions = heroArrayCopy.sort(function(a,b){
+    return b.score - a.score;
+  }).map(function(d){
+    return d.name;
+  })
+  return suggestions;
+};
 
-//Prevents a hero from being drafted twice, from either team
-//May expand for future websocket 2 players drafting simultaneously
-function _alreadySelectedCheck(hero){
+// Checks if target hero is already drafted
+function _alreadySelected(hero){
   if(_alliedTeam.indexOf(hero) === -1 && _enemyTeam.indexOf(hero) === -1){
     return true;
   } else {
-    alert(hero + ' is already drafted!');
     return false;
   }
 };
 
-var _alliedTeam = [];
-
-function _addAlliedHero(hero){
-  if(_alliedTeam.length < 5 && _alreadySelectedCheck(hero)){
-    _alliedTeam.push(hero);
+//Checks if too many tanks/healers have already been drafted
+function _checkRole(hero){
+  //This object could become a property on teams
+  var composition = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0
+  };
+  for(var i = 0; i < _alliedTeam.length; i++){
+    composition[_alliedTeam[i].role]++;
+  }
+  if((hero.role === 1 || hero.role === 2) && composition[hero.role] > 2 ){
+    return false;
   } else {
-    console.log("failed to add hero");
+    return true;
   }
 };
 
-function _removeAlliedHero(hero){
-  var index = _alliedTeam.indexOf(hero);
-  if(index > -1){
-    _alliedTeam.splice(index, 1);
-  }
-}
-
-
-var _enemyTeam = [];
-
-function _addEnemyHero(hero){
-  if(_enemyTeam.length < 5 && _alreadySelectedCheck(hero)){
-    _enemyTeam.push(hero);
-  } else {
-    console.log("failed to add to enemies");
+// Mutates input and adds/updates score property
+function _updateScores(heroArray){
+  for(var i = 0; i < heroArray.length; i++){
+    heroArray[i].score = _calculatePoints(heroArray[i]);
   }
 };
 
-function _removeEnemyHero(hero){
-  var index = _enemyTeam.indexOf(hero);
-  if(index > -1){
-    _enemyTeam.splice(index, 1);
+/* ======= Store Action Utilities ======= */
+
+function _addHero(hero, team){
+  if(team.length < 5 && _alreadySelected(hero)){
+    team.push(hero);
+  } else {
+    console.log("Error: Failed to add " + hero + " to team");
   }
-}
+};
+
+function _removeHero(hero, team){
+  var index = team.indexOf(hero);
+  if(index > -1){
+    team.splice(index, 1);
+  } else {
+    console.log("Error: Failed to find " + hero + " in target team");
+  }
+};
+
+/* ======= Exported Object / Interface ======= */
 
 var AppStore = assign(EventEmitter.prototype, {
   emitChange: function(){
@@ -134,48 +151,42 @@ var AppStore = assign(EventEmitter.prototype, {
     return _enemyTeam;
   },
 
-  getHeroList: function(){
-    return _heroSelection;
-  },
-
-  getPercents: function(){
-    _populateSuccessChances();
-    // console.log(_heroWinCalcs);
-    return _heroWinCalcs;
+  getHeroArray: function(){
+    return _heroArray;
   },
 
   getSuggestions: function(){
-    var testval = _sortObjectValues(_heroWinCalcs);
-    // console.log(testval);
-    return _sortObjectValues(_heroWinCalcs);
+    _updateScores(_heroArray);
+    var output = _generateSuggestions(_heroArray).filter(_alreadySelected);
+    return output;
   },
+
+  /* ======= Dispatcher Routing (Setters) ======= */
 
   dispatcherIndex: AppDispatcher.register(function(payload){
     var action = payload.action;
     switch(action.actionType){
       case AppConstants.ADD_ALLIED:
-        _addAlliedHero(payload.action.hero);
+        _addHero(payload.action.hero, _alliedTeam);
         break;
 
       case AppConstants.REMOVE_ALLIED:
-        _removeAlliedHero(payload.action.hero);
+        _removeHero(payload.action.hero, _alliedTeam);
         break;
 
       case AppConstants.ADD_ENEMY:
-        _addEnemyHero(payload.action.hero);
+        _addHero(payload.action.hero, _enemyTeam);
         break;
 
       case AppConstants.REMOVE_ENEMY:
-        _removeEnemyHero(payload.action.hero);
+        _removeHero(payload.action.hero, _enemyTeam);
         break;
     }
 
+    // Upon any dispatched action, signal change event to trigger update
     AppStore.emitChange();
-
     return true;
   })
-
 });
 
 module.exports = AppStore;
-

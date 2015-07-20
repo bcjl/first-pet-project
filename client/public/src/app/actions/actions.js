@@ -26,6 +26,11 @@ var AppActions = {
       hero: hero
     })
   },
+  loadHeroes: function(){
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.LOADING_HEROES,
+    })
+  },
 }
 
 module.exports = AppActions;

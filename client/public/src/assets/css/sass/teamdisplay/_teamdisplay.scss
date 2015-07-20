@@ -45,9 +45,10 @@
 .currentSelectionContainer {
   position: absolute;
   left: 40em;
-  top: 12em;
+  top: 6em;
   background-color: transparent;
   color:white;
+  z-index: 10;
 
   button {
     color: black;

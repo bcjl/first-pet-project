@@ -4,17 +4,11 @@ var AppActions = require('./../actions/actions');
 var AppStore = require('./../stores/store');
 var HeroBox = require('./HeroBox');
 
-function enemyTeam(){
-  return {enemies: AppStore.getEnemyTeam()}
-}
 
-var EnemyTeam = React.createClass({
-  getInitialState: function(){
-    return enemyTeam();
-  },
+var AlliedTeam = React.createClass({
 
   clickHandler: function(hero){
-    AppActions.removeEnemy(hero);
+    this.props.team.Remove(hero);
   },
 
   componentWillMount: function(){
@@ -22,12 +16,12 @@ var EnemyTeam = React.createClass({
   },
 
   _onChange: function(){
-    this.setState(enemyTeam());
+    this.forceUpdate();
   },
 
   render: function(){
     var that = this;
-    var heroList = this.state.enemies.map(function(hero, i){
+    var heroList = this.props.team.TeamComp.map(function(hero, i){
       return (
         <li key={i}>
             <div onClick={ that.clickHandler.bind(that, hero) }>
@@ -40,7 +34,7 @@ var EnemyTeam = React.createClass({
 
     return (
     <div className="">
-      <h3>Enemy Team</h3>
+      <h3>{this.props.team.Title}</h3>
       <ul>
           { heroList }
       </ul>
@@ -50,4 +44,4 @@ var EnemyTeam = React.createClass({
 
 });
 
-module.exports = EnemyTeam;
+module.exports = AlliedTeam;

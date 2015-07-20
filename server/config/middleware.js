@@ -18,9 +18,11 @@ module.exports = function(app, express){
 		app.use(express.static('client/public/dist'));
 	}
 
+	
 	//content routes and middleware 
 	var contentRouter = express.Router();
-	// app.use('/api/lesson', contentRouter);
-	// require('../content/contentRoutes.js')(contentRouter);
+	app.use('/api', contentRouter);
+	require('./../content/contentRoutes.js')(contentRouter);
+
 
 };

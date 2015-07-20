@@ -4,11 +4,9 @@ var AppActions = require('./../actions/actions');
 var AppStore = require('./../stores/store');
 var HeroBox = require('./HeroBox');
 function calcWin(){
+  console.log(AppStore.getSuggestions());
   return {
-    winSet: AppStore.getPercents(), 
-    sorted: AppStore.getSuggestions(), 
-    allied: AppStore.getAlliedTeam(), 
-    enemies: AppStore.getEnemyTeam()
+    suggestions: AppStore.getSuggestions()
   }
 }
 
@@ -22,7 +20,10 @@ var SuggestionBox = React.createClass({
   // },
 
   componentWillMount: function(){
-    AppStore.addChangeListener(this._onChange)
+    AppStore.addChangeListener(this._onChange);
+  },
+  componentWillUnmount: function(){
+    AppStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function(){
@@ -30,25 +31,17 @@ var SuggestionBox = React.createClass({
   },
 
   render: function(){
-    var that = this;
-    var mapInputs = [];
-    for(var i = 0; mapInputs.length < 5; i++){
-      var checkedHero = this.state.sorted[i];
-      if(this.state.allied.indexOf(checkedHero) === -1 && this.state.enemies.indexOf(checkedHero) === -1){
-        mapInputs.push([checkedHero, this.state.winSet[checkedHero]]);
-      }
-    }
-    var suggestionList = mapInputs.map(function(heroPercentBucket, i){
-      return (
-        <li>
-          <div className="SuggestionBoxEntry">
-            <HeroBox hero={heroPercentBucket[0]} />
-            <p>{heroPercentBucket[0]}</p>
-            <p>{heroPercentBucket[1]}</p>
-          </div>
-        </li>
-      )
-    })
+    var cutSuggestions = this.state.suggestions.slice(0,5);
+    var suggestionList = cutSuggestions.map(function(heroname, i){
+        return (
+          <li key = {i}>
+            <div className="SuggestionBoxEntry">
+              <HeroBox hero={heroname} />
+            </div>
+          </li>
+        )
+      })
+
     return (
     <div className="">
       <ul>
